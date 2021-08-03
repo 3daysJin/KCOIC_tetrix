@@ -8,11 +8,13 @@
 
 CTetrix::CTetrix()
 {
+	Block = new CBlock();
 }
 
 
 CTetrix::~CTetrix()
 {
+	delete Block;
 }
 
 void CTetrix::init()
@@ -24,12 +26,12 @@ void CTetrix::init()
 			else table[i][j] = 0;
 		}
 	}
-	Block = CBlock();
+	//Block = CBlock();
 	//Block 초기화
-	Block.setBtype(0);
-	Block.setBrotstat(0);
-	Block.setBlocX(3);
-	Block.setBlocY(0);
+	Block->setBtype(0);
+	Block->setBrotstat(0);
+	Block->setBlocX(3);
+	Block->setBlocY(0);
 	
 }
 
@@ -42,17 +44,17 @@ void CTetrix::Play_tetrix()
 	makeNewque();
 	printTable();
 	
-	Block.setBtype(blockQue.front());
+	Block->setBtype(blockQue.front());
 	while (1) {
 		if (_kbhit()) {
 			keytemp = _getch();
 			if (keytemp = EXT_KEY) { //방향키 입력
 				keytemp = _getch();
 				if (keytemp != KEY_UP) {
-					checkAround(Block.getBlocX(), Block.getBlocY(), Block.getBtype(), Block.getBrotstat());
-					Block.B_move(keytemp);
+					if(!checkAround(Block->getBlocX(), Block->getBlocY(), Block->getBtype(), Block->getBrotstat()))
+					Block->B_move(keytemp);
 				}
-				else Block.B_move(keytemp);
+				else Block->B_move(keytemp);
 			}
 			if (keytemp = KEY_HOLD) { //홀드키 입력
 
@@ -68,11 +70,7 @@ void CTetrix::printTable()
 	for (x=0; x < TW + 2; x++) {		
 		for (y=0; y < TH + 2; y++) {
 			gotoxy(TX + x * 2, TY + y);
-			if (table[y][x])puts("■");
-			//else puts("□"); 걍 공백으로 두는게 깔끔함
-			//block은 따로 printBlock 하는 편이 나을듯
-			//gotoxy(TX + Block.getBlocX() * 2, TY + Block.getBlocY());
-			
+			if (table[y][x])	puts("■");
 		}
 	}
 	//임시
@@ -88,7 +86,7 @@ bool CTetrix::checkAround(int x, int y, int bt, int r)
 	int i=0,j=0; 
 	for (i = 0; i < 4; i++) {
 		for (; j < 4; j++) {
-		if (table[x + Block.block[bt][r][j][i]][y + Block.block[bt][r][j][i]])
+		if (table[x + Block->block[bt][r][j][i]][y + Block->block[bt][r][j][i]])
 			return true;
 		}
 	}

@@ -41,6 +41,6 @@ public:
 	void CursorView(char show);
 	void isitFull();
 	void printTable();	
-	void makeQue();
+	//void makeQue();
 	void refillQue();
 };

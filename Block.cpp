@@ -47,7 +47,7 @@ void CBlock::mergeB()
 
 int CBlock::getBtype()
 {
-	return this->B_type;
+	return B_type;
 }
 
 void CBlock::setBtype(int type)
@@ -57,7 +57,7 @@ void CBlock::setBtype(int type)
 
 int CBlock::getBrotstat()
 {
-	return this->B_rot_stat;
+	return B_rot_stat;
 }
 
 void CBlock::setBrotstat(int stat)
@@ -67,7 +67,7 @@ void CBlock::setBrotstat(int stat)
 
 int CBlock::getBlocX()
 {
-	return this->B_locX;
+	return B_locX;
 }
 
 void CBlock::setBlocX(int loc)
@@ -77,7 +77,7 @@ void CBlock::setBlocX(int loc)
 
 int CBlock::getBlocY()
 {
-	return this->B_locY;
+	return B_locY;
 }
 
 void CBlock::setBlocY(int loc)

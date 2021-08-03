@@ -9,7 +9,7 @@ class CTetrix
 {
 private:
 	bool table[TH + 2][TW + 2] = { 0, }; //[y][x] °¡·Î10Ä­, ¼¼·Î20Ä­
-	CBlock Block;
+	CBlock* Block;
 	queue<int> blockQue;
 	queue<int> previewQue;
 public:
