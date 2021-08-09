@@ -28,10 +28,10 @@ void CTetrix::init()
 	}
 	//Block = CBlock();
 	//Block 초기화
-	Block->setBtype(0);
+	Block->setBtype(3);
 	Block->setBrotstat(0);
-	Block->setBlocX(3);
-	Block->setBlocY(0);
+	Block->setBlocX(5);
+	Block->setBlocY(6);
 	
 }
 
@@ -45,6 +45,7 @@ void CTetrix::Play_tetrix()
 	printTable();
 	
 	Block->setBtype(blockQue.front());
+	Block->printB(1);
 	while (1) {
 		if (_kbhit()) {
 			keytemp = _getch();
@@ -73,7 +74,7 @@ void CTetrix::printTable()
 			if (table[y][x])	puts("■");
 		}
 	}
-	//임시
+	//for debug
 	gotoxy(42, 3); puts("Tetris Ver 1.0");
 	gotoxy(42, 5); puts("좌우:이동, 위:회전, 아래:내림");
 	gotoxy(42, 6); puts("공백:전부 내림");
@@ -85,8 +86,9 @@ bool CTetrix::checkAround(int x, int y, int bt, int r)
 {
 	int i=0,j=0; 
 	for (i = 0; i < 4; i++) {
-		for (; j < 4; j++) {
-		if (table[x + Block->block[bt][r][j][i]][y + Block->block[bt][r][j][i]])
+		for (j=0; j < 4; j++) {
+		//if (table[x + Block->block[bt][r][j][i]][y + Block->block[bt][r][j][i]]) //
+			if(table[x+j][y+i]&& Block->block[bt][r][i][j])
 			return true;
 		}
 	}

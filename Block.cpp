@@ -34,9 +34,12 @@ void CBlock::printB(bool show)
 {
 	for (int j = 0; j < 4; j++) {
 		for (int i = 0; i < 4; i++) {
-			gotoxy(TX + (block[B_type][B_rot_stat][i][j] + B_locX) * 2, TY + block[B_type][B_rot_stat][i][j] + B_locY);
-			if(show) puts("бс");
-			else puts("  ");
+			//gotoxy(TX + (block[B_type][B_rot_stat][i][j] + B_locX) * 2, TY + block[B_type][B_rot_stat][i][j] + B_locY);
+			if(block[B_type][B_rot_stat][i][j]) {
+				gotoxy(TX + (i + B_locX) * 2, TY + j + B_locY);
+				if(show) puts("бс");
+				else puts("  ");
+			}
 		}
 	}
 }
