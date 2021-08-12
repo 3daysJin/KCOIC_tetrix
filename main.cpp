@@ -2,6 +2,6 @@
 
 
 int main() {
-	CTetrix Tet;
-	Tet.Play_tetrix();
+	CTetrix Tetrix;
+	Tetrix.Play();
 }

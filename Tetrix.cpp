@@ -45,7 +45,7 @@ void Tetrix::Play_tetrix()
 				keytemp = _getch();
 				if (keytemp = EXT_KEY) { //방향키 입력
 					keytemp = _getch();
-					Block.B_move(keytemp);
+					Block.move(keytemp);
 				}
 				if (keytemp = KEY_HOLD) { //홀드키 입력
 				

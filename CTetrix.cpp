@@ -1,9 +1,4 @@
 #include "CTetrix.h"
-#include <Windows.h> //gotoxy
-#include <conio.h> //_kbhit()
-
-#include <time.h> // time 함수가 포함되어 있는 헤더파일 
-#include <stdlib.h> // srand, rand 함수가 포함되어 있는 헤더파일
 
 
 CTetrix::CTetrix()
@@ -20,51 +15,59 @@ CTetrix::~CTetrix()
 void CTetrix::init()
 {
 	//table 초기화
-	for (int i = 0; i < 22; i++) {//Y좌표
-		for (int j = 0; j < 12; j++) {//X좌표
-			if (i == 0 || i == 21 || j == 0 || j == 11) table[i][j] = 1;
-			else table[i][j] = 0;
+	for (int Y = 0; Y < 22; Y++) {//Y좌표
+		for (int X = 0; X < 12; X++) {//X좌표
+			if (Y == 0 || Y == 21 || X == 0 || X == 11) table[Y][X] = 1;
+			else table[Y][X] = 0;
 		}
 	}
 	//Block = CBlock();
 	//Block 초기화
-	Block->setBtype(3);
-	Block->setBrotstat(0);
-	Block->setBlocX(5);
-	Block->setBlocY(6);
+	Block->SetType(3);
+	Block->SetRotation(0);
+	Block->SetX(3);
+	Block->SetY(4);
 	
 }
 
-void CTetrix::Play_tetrix()
+void CTetrix::Play()
 {
 	CursorView(0); //커서가 깜빡이지 않게
 
 	char keytemp;
 	init();
-	makeNewque();
-	printTable();
+	MakeNewque();
+	PrintTable();
 	
-	Block->setBtype(blockQue.front());
-	Block->printB(1);
+	Block->SetType(blockQue.front());
+	Block->print(1);
 	while (1) {
 		if (_kbhit()) {
 			keytemp = _getch();
 			if (keytemp = EXT_KEY) { //방향키 입력
 				keytemp = _getch();
 				if (keytemp != KEY_UP) {
-					if(!checkAround(Block->getBlocX(), Block->getBlocY(), Block->getBtype(), Block->getBrotstat()))
-					Block->B_move(keytemp);
+					if(!CheckAround(Block->GetX(),Block->GetY(), Block->GetType(), Block->GetRotation()))
+					Block->move(keytemp);
 				}
-				else Block->B_move(keytemp);
+				else {
+					int next = Block->GetRotation();
+					next = ++next % 4;
+					if(!CheckAround(Block->GetX(), Block->GetY(), Block->GetType(), next))
+					Block->move(keytemp);
+				}
 			}
 			if (keytemp = KEY_HOLD) { //홀드키 입력
 
 			}
 		}
+		//시간 진행 마다 내려가는 블럭
+		//다른 블럭에 닿을시 합쳐짐
+		//Que가 비기전에 채워야함
 	}
 }
 
-void CTetrix::printTable()
+void CTetrix::PrintTable()
 {
 	int x = 0;
 	int y = 0;
@@ -82,20 +85,19 @@ void CTetrix::printTable()
 	//
 }
 
-bool CTetrix::checkAround(int x, int y, int bt, int r)
+bool CTetrix::CheckAround(int posx,int posy, int type, int stat)
 {
-	int i=0,j=0; 
-	for (i = 0; i < 4; i++) {
-		for (j=0; j < 4; j++) {
-		//if (table[x + Block->block[bt][r][j][i]][y + Block->block[bt][r][j][i]]) //
-			if(table[x+j][y+i]&& Block->block[bt][r][i][j])
-			return true;
+	int x=0,y=0; 
+	for (x = -2; x <= 2; x++) {
+		for (y=-2; y <= 2; y++) {
+			if(table[posy+y][posx+x] && Block->block[type][stat][x+2][y+2])
+			return true; //충돌 있음
 		}
 	}
-	return false;
+	return false; //충돌 없음
 }
 
-void CTetrix::makeNewque()
+void CTetrix::MakeNewque()
 {
 	while (!blockQue.empty())
 		blockQue.pop();
@@ -103,30 +105,19 @@ void CTetrix::makeNewque()
 		previewQue.pop();
 	//두개의 큐 초기화
 	srand(time(NULL));
-	int temp[7] = { 0, };
-	for (int i = 0; i < 7; i++) {
-		int randm = rand() % 7;
-		if(i==0) temp[i] = randm;
-		else {
-			for (int j = 0; j < i; j++) {
-				if (randm == temp[i]) {
-					i--; break;
-				}
-				if(j == i-1) temp[i] = randm;
-			}
-		} 
+	int temp[7] = { 0,1,2,3,4,5,6 };
+	for (int i = 0; i < 50; i++) {
+		int randm1 = rand() % 7;
+		int randm2 = rand() % 7;
+		int tempN = temp[randm1];
+		temp[randm1] = temp[randm2];
+		temp[randm2] = tempN;
 	}
 	for(int i = 0; i<7;i++)
 		blockQue.push(temp[i]);
 }
 
 
-
-void CTetrix::gotoxy(int x, int y)
-{
-	COORD pos = { x,y };
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
-}
 
 void CTetrix::CursorView(char show)
 {
