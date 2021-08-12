@@ -209,7 +209,7 @@ public:
 
 	void move(char inputKey); //블록을 움직인다
 	void print(bool show); //블록을 출력한다, 지울 수도 있음
-	void merge(); //블록을 테이블과 합친다.
+	
 
 	CBlock();
 	~CBlock();

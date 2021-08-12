@@ -43,9 +43,6 @@ void CBlock::print(bool show)
 	}
 }
 
-void CBlock::merge()
-{
-}
 
 int CBlock::GetType()
 {

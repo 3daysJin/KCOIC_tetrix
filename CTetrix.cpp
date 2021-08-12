@@ -46,15 +46,23 @@ void CTetrix::Play()
 			keytemp = _getch();
 			if (keytemp = EXT_KEY) { //방향키 입력
 				keytemp = _getch();
-				if (keytemp != KEY_UP) {
-					if(!CheckAround(Block->GetX(),Block->GetY(), Block->GetType(), Block->GetRotation()))
-					Block->move(keytemp);
-				}
-				else {
-					int next = Block->GetRotation();
-					next = ++next % 4;
-					if(!CheckAround(Block->GetX(), Block->GetY(), Block->GetType(), next))
-					Block->move(keytemp);
+				switch (keytemp) {
+				case KEY_DOWN:  //아래 이동
+					if (!CheckAround(Block->GetX(), Block->GetY() - 1, Block->GetType(), Block->GetRotation()))
+						Block->move(keytemp);
+					break;
+				case KEY_UP: //회전
+					if (!CheckAround(Block->GetX(), Block->GetY(), Block->GetType(), (Block->GetRotation() + 1) % 4))
+						Block->move(keytemp);
+					break;
+				case KEY_LEFT: //좌 이동
+					if (!CheckAround(Block->GetX()-1, Block->GetY(), Block->GetType(), Block->GetRotation()))
+						Block->move(keytemp);
+					break;
+				case KEY_RIGHT: //우 이동
+					if (!CheckAround(Block->GetX()+1, Block->GetY(), Block->GetType(), Block->GetRotation()))
+						Block->move(keytemp);
+					break;
 				}
 			}
 			if (keytemp = KEY_HOLD) { //홀드키 입력
@@ -106,7 +114,7 @@ void CTetrix::MakeNewque()
 	//두개의 큐 초기화
 	srand(time(NULL));
 	int temp[7] = { 0,1,2,3,4,5,6 };
-	for (int i = 0; i < 50; i++) {
+	for (int i = 0; i < 50; i++) { //shuffle
 		int randm1 = rand() % 7;
 		int randm2 = rand() % 7;
 		int tempN = temp[randm1];
@@ -115,6 +123,23 @@ void CTetrix::MakeNewque()
 	}
 	for(int i = 0; i<7;i++)
 		blockQue.push(temp[i]);
+}
+
+void CTetrix::merge()
+{
+	int x, y;
+	for (y = -2; y <= 2; y++) {
+		for (x = -2; x <= 2; x++) {
+			if (Block->GetY() + y >= 0)
+				table[Block->GetY() + y][Block->GetX() + x] |= Block->block[Block->GetType()][Block->GetRotation()][x][y];
+		}
+	}
+	IsLineFull();
+	PrintTable();
+}
+
+void CTetrix::IsLineFull()
+{
 }
 
 
