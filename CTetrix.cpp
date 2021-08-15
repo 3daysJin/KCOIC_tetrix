@@ -25,8 +25,8 @@ void CTetrix::init()
 	//Block 초기화
 	Block->SetType(3);
 	Block->SetRotation(0);
-	Block->SetX(3);
-	Block->SetY(4);
+	Block->SetX(4);
+	Block->SetY(3);
 	
 }
 
@@ -48,10 +48,11 @@ void CTetrix::Play()
 				keytemp = _getch();
 				switch (keytemp) {
 				case KEY_DOWN:  //아래 이동
-					if (!CheckAround(Block->GetX(), Block->GetY() - 1, Block->GetType(), Block->GetRotation()))
+					if (!CheckAround(Block->GetX(), Block->GetY() + 1, Block->GetType(), Block->GetRotation()))
 						Block->move(keytemp);
-					else
+					else {
 						merge();
+					}
 					break;
 				case KEY_UP: //회전
 					if (!CheckAround(Block->GetX(), Block->GetY(), Block->GetType(), (Block->GetRotation() + 1) % 4))
@@ -96,12 +97,12 @@ void CTetrix::PrintTable()
 	//
 }
 
-bool CTetrix::CheckAround(int posx,int posy, int type, int stat)
+bool CTetrix::CheckAround(int posx,int posy, int type, int rot)
 {
 	int x=0,y=0; 
 	for (x = -2; x <= 2; x++) {
 		for (y=-2; y <= 2; y++) {
-			if(table[posy+y][posx+x] && Block->block[type][stat][x+2][y+2])
+			if(table[posy+y][posx+x] && Block->block[type][rot][x+2][y+2])
 			return true; //충돌 있음
 		}
 	}
@@ -139,14 +140,14 @@ void CTetrix::merge()
 	for (y = -2; y <= 2; y++) {
 		for (x = -2; x <= 2; x++) {
 			if (Block->GetY() + y >= 0)
-				table[Block->GetY() + y][Block->GetX() + x] |= Block->block[Block->GetType()][Block->GetRotation()][x][y];
+				table[Block->GetY() + y][Block->GetX() + x] |= Block->block[Block->GetType()][Block->GetRotation()][x+2][y+2];
 		}
 	}
 	IsLineFull();
 	PrintTable();
 }
 
-void CTetrix::IsLineFull() //미완
+void CTetrix::IsLineFull()
 {
 	bool full = true;
 	bool temp[TW] = { 0, };
@@ -156,7 +157,7 @@ void CTetrix::IsLineFull() //미완
 			if (x==TW) { //line is full
 				for (int i = y; i >= 1; i--) {
 					for (int j = 1; j <= TW; j++) {
-						temp[j - 1] = table[i - 1][j];
+						table[i][j] = table[i - 1][j];
 					}
 				}
 			}
