@@ -84,6 +84,11 @@ void CBlock::SetY(int loc)
 	pos.y = loc;
 }
 
+POSITION CBlock::GetPos()
+{
+	return pos;
+}
+
 CBlock::CBlock() : pos(0,0), type(0), rotation(0)
 {
 }

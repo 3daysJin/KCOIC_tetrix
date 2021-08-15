@@ -1,16 +1,6 @@
 #pragma once
 #include "common.h"
 
-#define KEY_LEFT		0x4b
-#define KEY_RIGHT		0x4d
-#define KEY_UP			0x48
-#define KEY_DOWN		0x50
-#define EMPTY			0
-
-#define TX 5 //벽안에 들어가기 위한 보정치
-#define TY 1 //벽안에 들어가기 위한 보정치
-#define TW 10 //가로 길이
-#define TH 20 //세로 길이
 class CBlock
 {
 public:
@@ -205,6 +195,7 @@ public:
 	void SetX(int loc);
 	int GetY(); //블록의 Y좌표 반환
 	void SetY(int loc);
+	POSITION GetPos();
 	
 
 	void move(char inputKey); //블록을 움직인다

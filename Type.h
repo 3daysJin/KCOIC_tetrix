@@ -7,7 +7,7 @@ typedef struct _tagPosition {
 		x = iX;
 		y = iY;
 	}
-	_tagPosition(struct _tagPosition& tPos) {
+	_tagPosition(const struct _tagPosition& tPos) {
 		x = tPos.x;
 		y = tPos.y;
 	}

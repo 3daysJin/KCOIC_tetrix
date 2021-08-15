@@ -14,7 +14,8 @@ private:
 	void init();
 	void PrintTable();
 	bool CheckAround(int posx,int posy, int type, int stat); //충돌감지
-//	void Refillque(); //블록 새로 채우기
+	bool CheckAround(POS pos, int type, int stat);
+															 //	void Refillque(); //블록 새로 채우기
 	void MakeNewque(); //게임 시작전 블록 목록 만들기
 //	void PrintQue(); //앞으로 나올 블록 몇개 보여주기
 	

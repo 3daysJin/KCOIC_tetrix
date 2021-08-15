@@ -15,9 +15,9 @@ CTetrix::~CTetrix()
 void CTetrix::init()
 {
 	//table 초기화
-	for (int Y = 0; Y < 22; Y++) {//Y좌표
-		for (int X = 0; X < 12; X++) {//X좌표
-			if (Y == 0 || Y == 21 || X == 0 || X == 11) table[Y][X] = 1;
+	for (int Y = 0; Y < TH+2; Y++) {//Y좌표
+		for (int X = 0; X < TW+2; X++) {//X좌표
+			if (Y == 0 || Y == TH+1 || X == 0 || X == TW+1) table[Y][X] = 1;
 			else table[Y][X] = 0;
 		}
 	}
@@ -50,6 +50,8 @@ void CTetrix::Play()
 				case KEY_DOWN:  //아래 이동
 					if (!CheckAround(Block->GetX(), Block->GetY() - 1, Block->GetType(), Block->GetRotation()))
 						Block->move(keytemp);
+					else
+						merge();
 					break;
 				case KEY_UP: //회전
 					if (!CheckAround(Block->GetX(), Block->GetY(), Block->GetType(), (Block->GetRotation() + 1) % 4))
@@ -85,6 +87,7 @@ void CTetrix::PrintTable()
 			if (table[y][x])	puts("■");
 		}
 	}
+	
 	//for debug
 	gotoxy(42, 3); puts("Tetris Ver 1.0");
 	gotoxy(42, 5); puts("좌우:이동, 위:회전, 아래:내림");
@@ -103,6 +106,11 @@ bool CTetrix::CheckAround(int posx,int posy, int type, int stat)
 		}
 	}
 	return false; //충돌 없음
+}
+
+bool CTetrix::CheckAround(POS pos, int type, int stat)
+{
+	return false;
 }
 
 void CTetrix::MakeNewque()
@@ -138,8 +146,24 @@ void CTetrix::merge()
 	PrintTable();
 }
 
-void CTetrix::IsLineFull()
+void CTetrix::IsLineFull() //미완
 {
+	bool full = true;
+	bool temp[TW] = { 0, };
+	for (int y = 1; y <= TH; y++) {
+		for (int x = 1; x <= TW; x++) {
+			if (!table[y][x]) break;
+			if (x==TW) { //line is full
+				for (int i = y; i >= 1; i--) {
+					for (int j = 1; j <= TW; j++) {
+						temp[j - 1] = table[i - 1][j];
+					}
+				}
+			}
+
+		}
+
+	} 
 }
 
 
