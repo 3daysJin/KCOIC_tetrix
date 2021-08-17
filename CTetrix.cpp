@@ -93,6 +93,7 @@ void CTetrix::PrintTable()
 		for (y=0; y < TH + 2; y++) {
 			gotoxy(TX + x * 2, TY + y);
 			if (table[y][x])	puts("бс");
+			else puts("  ");
 		}
 	}
 	
@@ -152,7 +153,8 @@ void CTetrix::IsLineFull()
 		for (int x = 1; x <= TW; x++) {
 			if (!table[y][x]) break;
 			if (x==TW) { //line is full
-				for (int i = y; i >= 1; i--) {
+				for (int m = 1; m <= TW;m++) table[y][m] = 0;
+				for (int i = y; i > 1; i--) {
 					for (int j = 1; j <= TW; j++) {
 						table[i][j] = table[i - 1][j];
 					}
