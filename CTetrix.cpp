@@ -12,7 +12,7 @@ CTetrix::~CTetrix()
 	delete Block;
 }
 
-void CTetrix::init()
+void CTetrix::Init()
 {
 	//table 초기화
 	for (int Y = 0; Y < TH+2; Y++) {//Y좌표
@@ -28,6 +28,8 @@ void CTetrix::init()
 	Block->SetX(4);
 	Block->SetY(3);
 	
+	while (!blockQue.empty())
+		blockQue.pop();
 }
 
 void CTetrix::Play()
@@ -35,24 +37,20 @@ void CTetrix::Play()
 	CursorView(0); //커서가 깜빡이지 않게
 
 	char keytemp;
-	init();
+	
+	Init();
 	MakeNewque();
 	PrintTable();
 	
-	Block->SetType(blockQue.front());
-	Block->print(1);
+	PrepareNewBlock();
 	while (1) {
 		if (_kbhit()) {
 			keytemp = _getch();
-			if (keytemp = EXT_KEY) { //방향키 입력
+			if (keytemp == EXT_KEY) { //방향키 입력
 				keytemp = _getch();
 				switch (keytemp) {
 				case KEY_DOWN:  //아래 이동
-					if (!CheckAround(Block->GetX(), Block->GetY() + 1, Block->GetType(), Block->GetRotation()))
-						Block->move(keytemp);
-					else {
-						merge();
-					}
+					downFlag = true;
 					break;
 				case KEY_UP: //회전
 					if (!CheckAround(Block->GetX(), Block->GetY(), Block->GetType(), (Block->GetRotation() + 1) % 4))
@@ -68,13 +66,22 @@ void CTetrix::Play()
 					break;
 				}
 			}
-			if (keytemp = KEY_HOLD) { //홀드키 입력
+			if (keytemp == KEY_HOLD) { //홀드키 입력
 
 			}
 		}
 		//시간 진행 마다 내려가는 블럭
-		//다른 블럭에 닿을시 합쳐짐
-		//Que가 비기전에 채워야함
+
+		if (downFlag) {
+			if (!CheckAround(Block->GetX(), Block->GetY() + 1, Block->GetType(), Block->GetRotation())) {
+				Block->move(keytemp);
+				downFlag = false;
+			}
+			else {
+				Merge();
+				PrepareNewBlock();
+			}
+		}
 	}
 }
 
@@ -109,18 +116,8 @@ bool CTetrix::CheckAround(int posx,int posy, int type, int rot)
 	return false; //충돌 없음
 }
 
-bool CTetrix::CheckAround(POS pos, int type, int stat)
-{
-	return false;
-}
-
 void CTetrix::MakeNewque()
 {
-	while (!blockQue.empty())
-		blockQue.pop();
-	while (!previewQue.empty())
-		previewQue.pop();
-	//두개의 큐 초기화
 	srand(time(NULL));
 	int temp[7] = { 0,1,2,3,4,5,6 };
 	for (int i = 0; i < 50; i++) { //shuffle
@@ -134,7 +131,7 @@ void CTetrix::MakeNewque()
 		blockQue.push(temp[i]);
 }
 
-void CTetrix::merge()
+void CTetrix::Merge()
 {
 	int x, y;
 	for (y = -2; y <= 2; y++) {
@@ -165,6 +162,21 @@ void CTetrix::IsLineFull()
 		}
 
 	} 
+}
+
+void CTetrix::PrepareNewBlock()
+{
+	//que 내부 요소 수 검사
+	if (blockQue.size() <= 4)
+		MakeNewque();
+	
+	Block->SetRotation(0);
+	Block->SetX(4);
+	Block->SetY(3);
+	Block->SetType(blockQue.front());
+	blockQue.pop();
+	Block->print(1);
+	downFlag = false;
 }
 
 
