@@ -23,26 +23,30 @@ void CTetrix::Init()
 	}
 	//Block = CBlock();
 	//Block 초기화
-	Block->SetType(3);
+	Block->SetType(0);
 	Block->SetRotation(0);
 	Block->SetX(4);
 	Block->SetY(3);
 	
 	while (!blockQue.empty())
 		blockQue.pop();
+	while (!previewQue.empty())
+		previewQue.pop_back();
 }
 
 void CTetrix::Play()
 {
 	CursorView(0); //커서가 깜빡이지 않게
 
-	char keytemp;
+	char keytemp = NULL;
 	
 	Init();
-	MakeNewque();
-	PrintTable();
-	
 	PrepareNewBlock();
+	PrintTable();
+	EraseBlockQue();
+	PrintBlockQue();
+	Block->print(1);
+
 	while (1) {
 		if (_kbhit()) {
 			keytemp = _getch();
@@ -80,6 +84,8 @@ void CTetrix::Play()
 			else {
 				Merge();
 				PrepareNewBlock();
+				EraseBlockQue();
+				PrintBlockQue();
 			}
 		}
 	}
@@ -132,6 +138,32 @@ void CTetrix::MakeNewque()
 		blockQue.push(temp[i]);
 }
 
+void CTetrix::EraseBlockQue()
+{
+	for (int i = 0; i < 3; i++) {
+		for (int y = -2; y <= 2; y++) {
+			for (int x = -2; x <= 2; x++) {
+				gotoxy(TX + (x + TW + 4) * 2, TY + y + 9 + i * 5);
+				puts("  ");
+			}
+		}
+	}
+}
+
+void CTetrix::PrintBlockQue()
+{
+	for (int i = 0; i < 3; i++) {
+		for (int y = -2; y <= 2; y++) {
+			for (int x = -2; x <= 2; x++) {
+				if (Block->block[previewQue[i]][0][x + 2][y + 2]) {
+					gotoxy(TX + (x + TW+4) * 2, TY + y + 9+i*5);
+					puts("■");
+				}
+			}
+		}
+	}
+}
+
 void CTetrix::Merge()
 {
 	int x, y;
@@ -169,14 +201,19 @@ void CTetrix::IsLineFull()
 void CTetrix::PrepareNewBlock()
 {
 	//que 내부 요소 수 검사
-	if (blockQue.size() <= 4)
+	if (blockQue.size() <= 6)
 		MakeNewque();
+	if(previewQue.size()<=4)
+		for (int i = 0; i < 6; i++) {
+			previewQue.push_back(blockQue.front());
+			blockQue.pop();
+		}
 	
 	Block->SetRotation(0);
 	Block->SetX(4);
 	Block->SetY(3);
-	Block->SetType(blockQue.front());
-	blockQue.pop();
+	Block->SetType(previewQue.front());
+	previewQue.erase(previewQue.begin());
 	Block->print(1);
 	downFlag = false;
 }
